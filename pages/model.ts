@@ -9,7 +9,7 @@ export class ModelPage {
     constructor(page: Page) {
         this.page = page;
         this.votebox = page.getByLabel('Your Comment (optional)');
-        this.voteCount = page.getByText(/Votes:/);
+        this.voteCount = page.getByRole('heading').filter({ hasText:'Votes:'});
         this.voteButton = page.getByRole('button', { name: 'Vote!' });
     }
 
