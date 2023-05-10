@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 
 const requestURL = 'https://k51qryqov3.execute-api.ap-southeast-2.amazonaws.com/prod';
 
+//generate a new user object with random values.
 export function createUser() {
     const firstName = faker.name.firstName();
     const lastName = faker.name.lastName();
@@ -18,6 +19,7 @@ export function createUser() {
     }
 }
 
+//get user access token
 export async function getToken(username: string, password: string):Promise<string>{
     const url = `${requestURL}/oauth/token`;
     const params = new URLSearchParams();
@@ -32,6 +34,7 @@ export async function getToken(username: string, password: string):Promise<strin
     return data.access_token;
 }
 
+//sign up a new user using api.
 export async function signUp(user) {
     const url = `${requestURL}/users`;
     const body = {username:user.userName,firstName:user.firstName,lastName:user.lastName,password:user.password,confirmPassword:user.password};
@@ -42,6 +45,7 @@ export async function signUp(user) {
     expect(response.ok); 
 }
 
+//get the list of all models by calling api
 export async function getModels() {
     const url = `${requestURL}/models`;
     const response = await fetch(url);
@@ -49,13 +53,15 @@ export async function getModels() {
     return data.models;
 }
 
+//get a random model id from the list
 export async function getRandomModelId() {
     const index = Math.floor(Math.random() * (4) + 1);
     const models = await getModels();
-    const modelId = models[index].id.replace("|", "%7C");
+    const modelId = models[index].id.replace("|", "%7C"); //"|" in the id needs to be replaced by "%7C" before being used as url.
     return modelId;
 }
 
+//vote a model with comment from backend.
 export async function vote(user, model, comment) {
     const token = await getToken(user.userName, user.password);
     const body = {
@@ -66,14 +72,17 @@ export async function vote(user, model, comment) {
         headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(body),
+        body: JSON.stringify(body),
 
     });
     return resp;
 }
 
+//get the vote count of a specific model from backend.
 export async function getModelVoteCount(modelId) {
     const resp = await fetch(`${requestURL}/models/${modelId}`);
     const data = await resp.json();
     return data.votes;    
 }
+
+
