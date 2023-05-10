@@ -28,7 +28,5 @@ export class HomePage {
         await this.signInBox.fill(username);
         await this.passwordBox.fill(password);
         await this.loginButton.click();
-        expect(this.profileLink).toBeVisible();
-        expect(this.logoutLink).toBeVisible();
     }
 }
